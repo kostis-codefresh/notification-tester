@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"html"
 	"io/ioutil"
@@ -21,6 +22,7 @@ func main() {
 	http.HandleFunc("/list", nf.listNotifications)
 	http.HandleFunc("/notify", nf.createNotification)
 	http.HandleFunc("/clear", nf.clearNotifications)
+	http.HandleFunc("/verify", nf.dumpNotications)
 
 	fs := http.FileServer(http.Dir("./static"))
 	http.Handle("/", fs)
@@ -57,4 +59,18 @@ func (nh *notificationHandler) clearNotifications(w http.ResponseWriter, req *ht
 	defer nh.mu.Unlock()
 	nh.notifications = nil
 	fmt.Fprintf(w, "Cleared")
+}
+
+func (nh *notificationHandler) dumpNotications(w http.ResponseWriter, req *http.Request) {
+	nh.mu.RLock()
+	defer nh.mu.RUnlock()
+	jsonResult, err := json.Marshal(nh.notifications)
+	if err != nil {
+		log.Fatalf("Could not convert to JSON Err: %s", err)
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "Could not write Notifications as JSON")
+		return
+	}
+	fmt.Fprint(w, string(jsonResult))
+
 }
