@@ -2,13 +2,16 @@ package main
 
 import (
 	"fmt"
+	"html"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"sync"
 )
 
 type notificationHandler struct {
-	mu sync.Mutex // guards n
-	n  int
+	mu            sync.Mutex // guards n
+	notifications []string
 }
 
 func main() {
@@ -29,19 +32,29 @@ func main() {
 func (nh *notificationHandler) listNotifications(w http.ResponseWriter, req *http.Request) {
 	nh.mu.Lock()
 	defer nh.mu.Unlock()
-	fmt.Fprintf(w, "<div class=\"entry\"><span id=\"dfdf\">%d</span></div>", nh.n)
+	for _, notification := range nh.notifications {
+		fmt.Fprintf(w, "<div class=\"entry\"><span>%s</span></div>", notification)
+	}
 }
 
 func (nh *notificationHandler) createNotification(w http.ResponseWriter, req *http.Request) {
+	body, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		log.Fatalf("Bad Request from client. Err: %s", err)
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "Could not read request data")
+		return
+	}
+
 	nh.mu.Lock()
 	defer nh.mu.Unlock()
-	nh.n++
+	nh.notifications = append(nh.notifications, html.EscapeString(string(body)))
 	fmt.Fprintf(w, "Created")
 }
 
 func (nh *notificationHandler) clearNotifications(w http.ResponseWriter, req *http.Request) {
 	nh.mu.Lock()
 	defer nh.mu.Unlock()
-	nh.n = 0
-	fmt.Fprintf(w, "<div class=\"entry\"><span id=\"dfdf\">No Argo CD Notifications yet</span></div>")
+	nh.notifications = nil
+	fmt.Fprintf(w, "Cleared")
 }
