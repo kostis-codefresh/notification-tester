@@ -22,7 +22,7 @@ func main() {
 	http.HandleFunc("/list", nf.listNotifications)
 	http.HandleFunc("/notify", nf.createNotification)
 	http.HandleFunc("/clear", nf.clearNotifications)
-	http.HandleFunc("/verify", nf.dumpNotications)
+	http.HandleFunc("/verify", nf.dumpNotifications)
 
 	fs := http.FileServer(http.Dir("./static"))
 	http.Handle("/", fs)
@@ -61,7 +61,7 @@ func (nh *notificationHandler) clearNotifications(w http.ResponseWriter, req *ht
 	fmt.Fprintf(w, "Cleared")
 }
 
-func (nh *notificationHandler) dumpNotications(w http.ResponseWriter, req *http.Request) {
+func (nh *notificationHandler) dumpNotifications(w http.ResponseWriter, req *http.Request) {
 	nh.mu.RLock()
 	defer nh.mu.RUnlock()
 	jsonResult, err := json.Marshal(nh.notifications)

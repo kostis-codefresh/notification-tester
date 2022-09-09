@@ -16,7 +16,7 @@ in a simple list view
 
 then visit http://localhost:8080 in your browser
 
-## How to build and run container
+## How to build and run a container
 
 Run
 
