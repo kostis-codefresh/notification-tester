@@ -5,7 +5,7 @@
     <title>Webhook tester</title>
 	<link rel="shortcut icon" href="favicon.png" type="image/png" />
     <link rel="stylesheet" href="style.css">
-    
+    <script src="https://unpkg.com/htmx.org@1.8.0" integrity="sha384-cZuAZ+ZbwkNRnrKi05G/fjBX+azI9DNOkNYysZ0I/X5ZFgsmMiBXgDZof30F5ofc" crossorigin="anonymous"></script>
   </head>
   <body>
     <div class="container">
@@ -17,20 +17,22 @@
 			
 			<button id="push">Clear all</button>
 		</div>
-		<div id="entries">
-
+		<div id="entries" hx-get="callme" hx-trigger="every 1s">
+<!--
 
 			<div class="entry">
                 <span id="dfd">
-                    Application web was deployed successully to cluster 3
+                    Application web was deployed successfully to cluster 3
                 </span>
             </div>
 
 			<div class="entry">
                 <span id="dfdf">
-                    Application web was deployed successully to cluster 2
+                    Application web was deployed successfully to cluster 2
                 </span>
             </div>
+
+			-->
 		</div>
 	
 	</div>
