@@ -43,5 +43,5 @@ func (nh *notificationHandler) clearNotifications(w http.ResponseWriter, req *ht
 	nh.mu.Lock()
 	defer nh.mu.Unlock()
 	nh.n = 0
-	fmt.Fprintf(w, "Created")
+	fmt.Fprintf(w, "<div class=\"entry\"><span id=\"dfdf\">No Argo CD Notifications yet</span></div>")
 }

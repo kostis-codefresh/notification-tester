@@ -15,7 +15,7 @@
 			
 			<h1>Incoming Webhooks</h1>
 			
-			<button id="push">Clear all</button>
+			<button id="push" hx-target="#entries" hx-get="clear">Clear all</button>
 		</div>
 		<div id="entries" hx-get="callme" hx-trigger="every 1s">
 <!--
