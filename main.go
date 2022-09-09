@@ -10,7 +10,7 @@ import (
 )
 
 type notificationHandler struct {
-	mu            sync.Mutex // guards n
+	mu            sync.RWMutex
 	notifications []string
 }
 
@@ -18,7 +18,7 @@ func main() {
 
 	nf := new(notificationHandler)
 
-	http.HandleFunc("/callme", nf.listNotifications)
+	http.HandleFunc("/list", nf.listNotifications)
 	http.HandleFunc("/notify", nf.createNotification)
 	http.HandleFunc("/clear", nf.clearNotifications)
 
@@ -30,8 +30,8 @@ func main() {
 }
 
 func (nh *notificationHandler) listNotifications(w http.ResponseWriter, req *http.Request) {
-	nh.mu.Lock()
-	defer nh.mu.Unlock()
+	nh.mu.RLock()
+	defer nh.mu.RUnlock()
 	for _, notification := range nh.notifications {
 		fmt.Fprintf(w, "<div class=\"entry\"><span>%s</span></div>", notification)
 	}
